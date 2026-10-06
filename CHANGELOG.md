@@ -4,6 +4,12 @@ All notable changes to this package are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses
 [Semantic Versioning](https://semver.org/) (see [RELEASING.md](RELEASING.md)).
 
+## 0.1.1
+
+* README: pub version, pub points, CI and license badges.
+* README: ready-to-paste Android backup rules to make a reinstall start a
+  fresh sync (section 8.8).
+
 ## 0.1.0
 
 First public release.

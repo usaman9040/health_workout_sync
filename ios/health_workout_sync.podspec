@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'health_workout_sync'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Sync workouts from Apple Health into your app, in the background, without loss or duplicates.'
   s.description      = <<-DESC
 Imports workouts from Apple Health via anchored queries, with HKObserverQuery background delivery into a headless Flutter engine.

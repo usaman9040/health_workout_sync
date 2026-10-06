@@ -1,5 +1,10 @@
 # health_workout_sync
 
+[![pub version](https://img.shields.io/pub/v/health_workout_sync.svg)](https://pub.dev/packages/health_workout_sync)
+[![pub points](https://img.shields.io/pub/points/health_workout_sync)](https://pub.dev/packages/health_workout_sync/score)
+[![CI](https://github.com/usaman9040/health_workout_sync/actions/workflows/ci.yml/badge.svg)](https://github.com/usaman9040/health_workout_sync/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 **Get your users' workouts from Apple Health (iPhone) and Health Connect (Android) into your app — automatically, in the background, with nothing lost and nothing counted twice.**
 
 Your users record workouts with all kinds of apps and watches: Apple Watch, Garmin, Samsung Galaxy Watch, Fitbit, Oura, WHOOP, Strava… Those apps don't talk to your app. They all write to the phone's health store — **Apple Health** on iPhone, **Health Connect** on Android. This package reads new workouts from there and hands each one to *your* code exactly once.
@@ -470,7 +475,46 @@ Ask for permission once, from your UI (e.g. right after connecting): `await Heal
 
 Uninstalling removes the app's health permission and the package's saved position. After reinstalling, the user taps Connect again and import restarts **from the start of that day**. Workouts from today that you already have come back as `duplicate` (your unique id). Nothing is doubled.
 
-> **Android Auto Backup** may restore the package's saved state on reinstall. The package then shows `status.readAuthorized == false` (access is gone) — handle it as in [8.5](#85-the-user-turns-access-off-later). To always start fresh instead, exclude shared preferences from backup with `android:dataExtractionRules`.
+> **Android Auto Backup** may restore the package's saved state on reinstall. The package then shows `status.readAuthorized == false` (access is gone) — handle it as in [8.5](#85-the-user-turns-access-off-later), or make every reinstall start fresh like iOS:
+
+<details>
+<summary>Exclude the sync state from Android backup</summary>
+
+The package stores its state in `files/datastore/FlutterSharedPreferences.preferences_pb` (the `shared_preferences` async store). Excluding that file also excludes any values **your** app saves with `SharedPreferencesAsync` / `SharedPreferencesWithCache` — check that's fine for you.
+
+`android/app/src/main/res/xml/data_extraction_rules.xml` (Android 12+):
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="datastore/FlutterSharedPreferences.preferences_pb" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="datastore/FlutterSharedPreferences.preferences_pb" />
+    </device-transfer>
+</data-extraction-rules>
+```
+
+`android/app/src/main/res/xml/backup_rules.xml` (Android 11 and lower):
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="file" path="datastore/FlutterSharedPreferences.preferences_pb" />
+</full-backup-content>
+```
+
+Then on `<application>` in `AndroidManifest.xml`:
+
+```xml
+<application
+    android:dataExtractionRules="@xml/data_extraction_rules"
+    android:fullBackupContent="@xml/backup_rules"
+    ...>
+```
+
+</details>
 
 **New phone:** same as a reinstall — import starts from the connect day; your server rejects anything it already has.
 

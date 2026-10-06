@@ -3,7 +3,7 @@ description: >-
   Sync workouts from Apple Health and Health Connect (Samsung Health, Garmin,
   Fitbit, Oura…) into your backend, in the background, without losing or
   duplicating any.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/usaman9040/health_workout_sync
 issue_tracker: https://github.com/usaman9040/health_workout_sync/issues
 topics:
