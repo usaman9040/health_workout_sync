@@ -1,0 +1,65 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Everything below is merged into the host app automatically. -->
+
+  <!-- Workouts only: Health Connect exercise sessions, plus reading them
+       from a WorkManager job while the app is in the background. -->
+  <uses-permission android:name="android.permission.health.READ_EXERCISE" />
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" />
+  <!-- HealthWorkoutSync.notify() (Android 13+ asks the user at runtime). -->
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+  <application>
+    <!-- Health Connect only shows its permission sheet when the app has a
+         privacy-policy entry point: the rationale action (Android 13-) and
+         the VIEW_PERMISSION_USAGE alias (Android 14+). The URL comes from the
+         host's <meta-data android:name="health_workout_sync.privacy_policy_url"/>. -->
+    <activity
+        android:name="com.levelupfitness.health_workout_sync.HealthPermissionsRationaleActivity"
+        android:exported="true"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+      </intent-filter>
+    </activity>
+    <activity-alias
+        android:name="com.levelupfitness.health_workout_sync.ViewPermissionUsageActivity"
+        android:exported="true"
+        android:targetActivity="com.levelupfitness.health_workout_sync.HealthPermissionsRationaleActivity"
+        android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+        <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+      </intent-filter>
+    </activity-alias>
+  </application>
+
+  <queries>
+    <!-- Health Connect itself (Android 13 and lower ship it as an app). -->
+    <package android:name="com.google.android.apps.healthdata" />
+    <intent>
+      <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+    </intent>
+    <!-- Fitness apps in FitnessAppGuide.all, so installedPackages() /
+         launchPackage() / fitnessApps() can see them (Android 11+ package
+         visibility). Keep in sync with lib/src/fitness_apps/fitness_app_guide.dart. -->
+    <package android:name="com.sec.android.app.shealth" />
+    <package android:name="com.garmin.android.apps.connectmobile" />
+    <package android:name="com.ouraring.oura" />
+    <package android:name="com.whoop.android" />
+    <package android:name="com.fitbit.FitbitMobile" />
+    <package android:name="com.strava" />
+    <package android:name="com.polar.polarflow" />
+    <package android:name="com.coros.coros" />
+    <package android:name="com.stt.android.suunto" />
+    <package android:name="com.huami.watch.hmwatchmanager" />
+    <package android:name="com.huawei.health" />
+    <package android:name="com.xiaomi.wearable" />
+    <package android:name="com.withings.wiscale2" />
+    <package android:name="com.onepeloton.callisto" />
+    <package android:name="com.hevy" />
+    <package android:name="io.strongapp.strong" />
+    <package android:name="com.nike.plusgps" />
+    <package android:name="com.nike.ntc" />
+    <package android:name="com.myfitnesspal.android" />
+  </queries>
+</manifest>
